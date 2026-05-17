@@ -37,7 +37,7 @@ This architecture exists to ensure:
 
 ## 3. Port Map
 
-| Ports |
+| Service | Port |
 |---|---|
 | Frontend (Next.js) | 3000 |
 | Backend (Express) | 4500 |

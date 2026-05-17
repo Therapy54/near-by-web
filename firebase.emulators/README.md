@@ -1,6 +1,9 @@
 # Firebase Emulator Configuration
 
-// NOTE: The emulator suite is launched via firebase.json in the repo root.
+// The emulator suite can be launched in two ways:
+// 1. From repo root (recommended): `firebase emulators:start`
+// 2. From this directory: `cd firebase.emulators && firebase emulators:start`
+
 // This file documents emulator setup and port assignments.
 
 # Authentication Emulator
@@ -18,6 +21,14 @@ STORAGE_PORT=4300
 # Emulator UI
 UI_HOST=localhost
 UI_PORT=4000
+
+# Emulator Hub (auto-assigned)
+HUB_HOST=localhost
+HUB_PORT=4400
+
+# Logging (auto-assigned)
+LOGGING_HOST=localhost
+LOGGING_PORT=4501
 
 # Export directory for emulator data
 EXPORT_DIR=./firebase.emulators/export

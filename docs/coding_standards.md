@@ -23,13 +23,20 @@ const user = await prisma.user.findUnique({ where: { id } });
 
 `if`, `else`, `for`, `while`, `try`, `catch`, and `finally` e.t.c.
 
-### ✅ Correct
+### ✅ Correct and Prefered
 ```typescript
 if (useEmulators) {
   admin.initializeApp({ projectId: 'demo' });
 }
 else {
   admin.initializeApp({ credential: admin.credential.cert(serviceAccount) });
+}
+
+try {
+  console.log("Codes!");
+}
+catch(err) {
+  console.log("Error occured");
 }
 ```
 

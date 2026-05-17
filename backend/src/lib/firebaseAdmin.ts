@@ -5,19 +5,31 @@ import { getAuth } from 'firebase-admin/auth';
 import type { ServiceAccount } from 'firebase-admin';
 import serviceAccount from '../../firebase-service-account.json';
 
-// Initialize Firebase Admin SDK
-initializeApp({
-  credential: cert(serviceAccount as ServiceAccount),
-  storageBucket: `${process.env.FIREBASE_PROJECT_ID}.appspot.com`
-});
+let adminApp: any;
 
-// Initialize services
-export const db = getFirestore();
-export const storage = getStorage();
-export const auth = getAuth();
+if (process.env.FIREBASE_USE_EMULATORS === 'true') {
+  adminApp = initializeApp({
+    projectId: process.env.FIREBASE_PROJECT_ID,
+    storageBucket: `${process.env.FIREBASE_PROJECT_ID}.appspot.com`
+  });
+}
+else {
+  adminApp = initializeApp({
+    credential: cert(serviceAccount as ServiceAccount),
+    storageBucket: `${process.env.FIREBASE_PROJECT_ID}.appspot.com`
+  });
+}
 
-// Verify ID token function
-export const verifyIdToken = async (token: string) => {
+export let db = getFirestore();
+export let storage = getStorage();
+export let auth = getAuth();
+
+if (process.env.FIREBASE_USE_EMULATORS === 'true') {
+  process.env.FIRESTORE_EMULATOR_HOST = 'localhost:4200';
+  db.settings({ host: 'localhost:4200', ssl: false });
+}
+
+export let verifyIdToken = async (token: string) => {
   return await auth.verifyIdToken(token);
 };
 

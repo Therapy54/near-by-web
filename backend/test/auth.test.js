@@ -1,33 +1,23 @@
 const request = require('supertest');
-const app = require('../src/index');
+let app = require('../dist/index').default;
 
 describe('Auth API Endpoints', () => {
-  let server;
-
-  beforeAll((done) => {
-    server = app.listen(4501, done);
-  });
-
-  afterAll((done) => {
-    server.close(done);
-  });
-
   test('Health endpoint should return OK', async () => {
-    const response = await request(server).get('/health');
+    let response = await request(app).get('/health');
     expect(response.status).toBe(200);
     expect(response.body.success).toBe(true);
     expect(response.body.data.status).toBe('OK');
   });
 
   test('API root endpoint should return message', async () => {
-    const response = await request(server).get('/api');
+    let response = await request(app).get('/api');
     expect(response.status).toBe(200);
     expect(response.body.success).toBe(true);
     expect(response.body.data.message).toBe('Near-By API is running');
   });
 
   test('Register endpoint should exist and handle missing fields', async () => {
-    const response = await request(server)
+    let response = await request(app)
       .post('/api/auth/register')
       .send({}); // Empty body
     
@@ -37,7 +27,7 @@ describe('Auth API Endpoints', () => {
   });
 
   test('Login endpoint should exist and handle missing fields', async () => {
-    const response = await request(server)
+    let response = await request(app)
       .post('/api/auth/login')
       .send({}); // Empty body
     
@@ -47,7 +37,7 @@ describe('Auth API Endpoints', () => {
   });
 
   test('Verify token endpoint should exist and handle missing token', async () => {
-    const response = await request(server)
+    let response = await request(app)
       .get('/api/auth/verify')
       .set('Authorization', ''); // Empty token
     

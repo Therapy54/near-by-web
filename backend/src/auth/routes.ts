@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { register, login, logout, verifyToken } from './controller';
 
-const router = Router();
+let router = Router();
 
 router.post('/register', register);
 router.post('/login', login);

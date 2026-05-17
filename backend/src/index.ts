@@ -4,20 +4,15 @@ import helmet from 'helmet';
 import dotenv from 'dotenv';
 import authRoutes from './auth/routes';
 
-// Load environment variables
-dotenv.config();
+let app = express();
+let PORT = process.env.PORT || 4500;
 
-const app = express();
-const PORT = process.env.PORT || 4500;
-
-// Middleware
 app.use(helmet());
 app.use(cors({
   origin: process.env.CORS_ORIGIN || 'http://localhost:3000'
 }));
 app.use(express.json());
 
-// Health check endpoint
 app.get('/health', (req, res) => {
   res.status(200).json({ 
     success: true, 
@@ -28,7 +23,6 @@ app.get('/health', (req, res) => {
   });
 });
 
-// Basic API route structure
 app.get('/api', (req, res) => {
   res.status(200).json({ 
     success: true, 
@@ -38,9 +32,12 @@ app.get('/api', (req, res) => {
   });
 });
 
-// Auth routes
 app.use('/api/auth', authRoutes);
 
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+  });
+}
+
+export default app;

@@ -1,0 +1,23 @@
+{
+  "emulators": {
+    "auth": {
+      "port": 4100
+    },
+    "firestore": {
+      "port": 4200
+    },
+    "storage": {
+      "port": 4300
+    },
+    "ui": {
+      "port": 4000,
+      "enabled": true
+    }
+  },
+  "firestore": {
+    "rules": "firebase.emulators/firestore.rules"
+  },
+  "storage": {
+    "rules": "firebase.emulators/storage.rules"
+  }
+}

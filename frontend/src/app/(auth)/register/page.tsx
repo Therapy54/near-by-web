@@ -18,42 +18,15 @@ export default function RegisterPage() {
     setError(null);
     
     try {
-      // Create user with Firebase client SDK
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       
-      // Update profile with display name if provided
       if (displayName) {
-        await updateProfile(userCredential.user, {
-          displayName
-        });
+        await updateProfile(userCredential.user, { displayName });
       }
       
-      // Get the ID token
-      const idToken = await userCredential.user.getIdToken();
-      
-      // Send ID token and displayName to our backend to create user record
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/register`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ 
-          token: idToken,
-          displayName: displayName || email.split('@')[0]
-        }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error?.message || 'Registration failed');
-      }
-
-      // In a real app, you might store user data in context or state
-      // For now, we'll just redirect to home or login
-      window.location.href = '/auth/login';
+      window.location.href = '/login';
     } catch (err: any) {
-      setError(err.message || 'Registration failed');
+      setError('Registration failed: ' + err.message);
     } finally {
       setLoading(false);
     }
@@ -65,114 +38,86 @@ export default function RegisterPage() {
     
     try {
       const provider = new GoogleAuthProvider();
-      // You can customize the Google provider here if needed
-      // provider.addScope('profile');
-      // provider.addScope('email');
       const userCredential = await signInWithPopup(auth, provider);
-      // Get the ID token
-      const idToken = await userCredential.user.getIdToken();
       
-      // Send ID token and displayName to our backend to create user record
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/register`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ 
-          token: idToken,
-          displayName: userCredential.user.displayName || userCredential.user.email?.split('@')[0] || ''
-        }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error?.message || 'Registration failed');
+      if (userCredential.user.displayName) {
+        await updateProfile(userCredential.user, { 
+          displayName: userCredential.user.displayName 
+        });
       }
-
-      // In a real app, you might store user data in context or state
-      // For now, we'll just redirect to home or login
-      window.location.href = '/auth/login';
+      
+      window.location.href = '/login';
     } catch (err: any) {
-      setError(err.message || 'Google sign in failed');
+      setError('Google sign up failed: ' + err.message);
     } finally {
       setGoogleLoading(false);
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
-      <div>
-        <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-          Email address
-        </label>
-        <input
-          id="email"
-          type="email"
-          autoComplete="email"
-          required
-          className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
+    <div className="min-h-screen bg-white flex items-center justify-center px-4 py-8">
+      <div className="w-full max-w-md">
+        <h2 className="text-2xl font-bold text-center mb-6">Create Account</h2>
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+            <input
+              type="email"
+              required
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Display Name</label>
+            <input
+              type="text"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              value={displayName}
+              onChange={(e) => setDisplayName(e.target.value)}
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
+            <input
+              type="password"
+              required
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+          </div>
+          
+          {error && (
+            <p className="mt-2 text-sm text-red-600">{error}</p>
+          )}
+          
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full py-2 bg-indigo-600 text-white font-medium rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:opacity-50"
+          >
+            {loading ? 'Creating account...' : 'Create account'}
+          </button>
+          
+          <div className="mt-4">
+            <button
+              onClick={handleGoogleSignIn}
+              disabled={googleLoading}
+              className="w-full py-2 bg-white text-gray-700 font-medium rounded-md border border-gray-300 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2"
+            >
+              {googleLoading ? 'Signing up with Google...' : 'Sign up with Google'}
+            </button>
+          </div>
+          
+          <div className="mt-4 text-center text-sm text-gray-500">
+            <a href="/login" className="font-medium text-indigo-600 hover:text-indigo-500">
+              Already have an account? Sign in
+            </a>
+          </div>
+        </form>
       </div>
-      
-      <div>
-        <label htmlFor="displayName" className="block text-sm font-medium text-gray-700 mb-1">
-          Display name (optional)
-        </label>
-        <input
-          id="displayName"
-          type="text"
-          autoComplete="name"
-          className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
-          value={displayName}
-          onChange={(e) => setDisplayName(e.target.value)}
-        />
-      </div>
-      
-      <div>
-        <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
-          Password
-        </label>
-        <input
-          id="password"
-          type="password"
-          autoComplete="current-password"
-          required
-          className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-      </div>
-      
-      {error && (
-        <p className="text-sm text-red-600">{error}</p>
-      )}
-      
-      <button
-        type="submit"
-        disabled={loading}
-        className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-primary hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 disabled:opacity-50"
-      >
-        {loading ? 'Creating account...' : 'Create account'}
-      </button>
-      
-      <div className="pt-4">
-        <button
-          onClick={handleGoogleSignIn}
-          disabled={googleLoading}
-          className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 disabled:opacity-50"
-        >
-          {googleLoading ? 'Signing up with Google...' : 'Sign up with Google'}
-        </button>
-      </div>
-      
-      <div className="text-sm text-center">
-        <a href="/auth/login" className="font-medium text-primary hover:text-primary/80">
-          Already have an account? Sign in
-        </a>
-      </div>
-    </form>
+    </div>
   );
 }

@@ -1,8 +1,9 @@
 import { initializeApp } from 'firebase/app';
-import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from 'firebase/auth';
+import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged, GoogleAuthProvider, signInWithPopup, connectAuthEmulator } from 'firebase/auth';
+import { getFirestore, connectFirestoreEmulator, doc, setDoc, getDoc } from 'firebase/firestore';
+import { getStorage, connectStorageEmulator, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
-// Your web app's Firebase configuration
-const firebaseConfig = {
+let firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY || '',
   authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN || '',
   projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || '',
@@ -11,13 +12,31 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID || ''
 };
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
+let app = initializeApp(firebaseConfig);
 
-// Initialize Firebase Authentication and get a reference to the service
-export const auth = getAuth(app);
+export let auth = getAuth(app);
+export let db = getFirestore(app);
+export let storage = getStorage(app);
 
-// Export auth methods
-export { signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged };
+if (typeof window !== 'undefined' && process.env.NEXT_PUBLIC_FIREBASE_USE_EMULATORS === 'true') {
+  connectAuthEmulator(auth, 'http://localhost:4100', { disableWarnings: true });
+  connectFirestoreEmulator(db, 'localhost', 4200);
+  connectStorageEmulator(storage, 'localhost', 4300);
+}
+
+export { 
+  signInWithEmailAndPassword, 
+  createUserWithEmailAndPassword, 
+  signOut, 
+  onAuthStateChanged,
+  GoogleAuthProvider,
+  signInWithPopup,
+  doc,
+  setDoc,
+  getDoc,
+  ref,
+  uploadBytes,
+  getDownloadURL
+};
 
 export default app;
