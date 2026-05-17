@@ -1,0 +1,9 @@
+{
+  "success": true,
+  "data": {
+    "example": "any response payload"
+  },
+  "error": null,
+  "request_id": "string"
+}
+
