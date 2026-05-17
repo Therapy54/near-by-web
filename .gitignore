@@ -56,3 +56,7 @@ pnpm-debug.log*
 # Backend Build
 # =========================
 dist/
+backend/firebase-service-account.json
+# Local environment files
+.env.local
+.env.*.local
