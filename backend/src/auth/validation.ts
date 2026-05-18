@@ -1,6 +1,6 @@
 // Auth validation - validates input for auth endpoints
-export const validateRegister = (req: any, res: any, next: any) => {
-  const { email, password, displayName } = req.body;
+export let validateRegister = (req: any, res: any, next: any) => {
+  let { email, password, displayName } = req.body;
 
   if (
     !email || !password || !displayName ||
@@ -17,8 +17,8 @@ export const validateRegister = (req: any, res: any, next: any) => {
   next();
 };
 
-export const validateLogin = (req: any, res: any, next: any) => {
-  const { email, password } = req.body;
+export let validateLogin = (req: any, res: any, next: any) => {
+  let { email, password } = req.body;
 
   if (!email || !password) {
     return res.status(400).json({

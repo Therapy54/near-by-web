@@ -25,6 +25,7 @@ This protocol defines the mandatory workflow for any AI agent interacting with t
 | Zero assumption | Never write code without reading the file it modifies first |
 | Isolation | Frontend never directly touches PostgreSQL or Firestore |
 | Thin routes | Route files only handle validation and response; all logic must belong to their own files
+|For the web app development, mobile first development/design must be considered for ui/ux implementation
 
 ## 4. Prohibited Actions
 

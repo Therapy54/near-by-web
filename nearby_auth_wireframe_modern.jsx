@@ -1,47 +1,4 @@
-'use client';
-
-import { useState } from 'react';
-import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
-import { auth } from '@/lib/firebase';
-import Link from 'next/link';
-
-export default function LoginPage() {
-  let [email, setEmail] = useState('');
-  let [password, setPassword] = useState('');
-  let [loading, setLoading] = useState(false);
-  let [error, setError] = useState<string | null>(null);
-  let [googleLoading, setGoogleLoading] = useState(false);
-
-  let handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setError(null);
-
-    try {
-      await signInWithEmailAndPassword(auth, email, password);
-      window.location.href = '/';
-    } catch (err: any) {
-      setError('Login failed: ' + err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  let handleGoogleSignIn = async () => {
-    setGoogleLoading(true);
-    setError(null);
-
-    try {
-      let provider = new GoogleAuthProvider();
-      let userCredential = await signInWithPopup(auth, provider);
-      window.location.href = '/';
-    } catch (err: any) {
-      setError('Google sign in failed: ' + err.message);
-    } finally {
-      setGoogleLoading(false);
-    }
-  };
-
+export default function NearbyAuthWireframe() {
   return (
     <div className="min-h-screen bg-[#F7F7F5] overflow-hidden relative">
       {/* BACKGROUND BLURS */}
@@ -99,7 +56,7 @@ export default function LoginPage() {
                 <div className="mt-4 flex items-center justify-between">
                   <div>
                     <div className="font-bold text-zinc-900">iPhone 15 Pro</div>
-                    <div className="text-sm text-zinc-500 mt-1">1.2km away</div>
+                    <div className="text-sm text-zinc-500 mt-1">📍 1.2km away</div>
                   </div>
 
                   <div className="text-lg font-black">₦1.8M</div>
@@ -111,7 +68,7 @@ export default function LoginPage() {
                   <div className="flex items-center gap-4">
                     <img
                       src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=1200&auto=format&fit=crop"
-                      className="w-14 h-14 rounded-full object-cover"
+                      className="w-14 h-14 rounded-2xl object-cover"
                     />
 
                     <div>
@@ -169,40 +126,57 @@ export default function LoginPage() {
               <div>
                 <div className="inline-flex items-center gap-2 bg-violet-100 text-violet-700 rounded-full px-4 py-2 text-sm font-semibold">
                   <span className="flex items-center gap-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 18l-1.813-2.096L5 15l2.187-.904L9 12l.813 2.096L12 15l-2.187.904zM18 13l.75 1.938L20.688 15 18.75 15.75 18 17.688 17.25 15.75 15.313 15l1.938-.063L18 13zM12 3l1.125 2.906L16 7.031l-2.875 1.125L12 11l-1.125-2.844L8 7.031l2.875-1.125L12 3z" />
-                    </svg>
-                    Sign In
-                  </span>
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 18l-1.813-2.096L5 15l2.187-.904L9 12l.813 2.096L12 15l-2.187.904zM18 13l.75 1.938L20.688 15 18.75 15.75 18 17.688 17.25 15.75 15.313 15l1.938-.063L18 13zM12 3l1.125 2.906L16 7.031l-2.875 1.125L12 11l-1.125-2.844L8 7.031l2.875-1.125L12 3z" />
+                  </svg>
+                  Join Near-By
+                </span>
                 </div>
 
                 <h2 className="mt-6 text-[42px] tracking-[-0.05em] leading-[1] font-black text-zinc-900">
-                  Welcome back
+                  Create your account
                 </h2>
 
                 <p className="mt-4 text-zinc-500 leading-relaxed text-[15px] max-w-md">
-                  Access your account to discover nearby opportunities.
+                  Start discovering nearby products, services, jobs and opportunities happening around you.
                 </p>
               </div>
 
               {/* FORM */}
               <div className="mt-10 space-y-5">
-                {error && <p className="text-sm text-red-600 mb-4">{error}</p>}
+                <div>
+                  <label className="text-[13px] font-bold uppercase tracking-[0.15em] text-zinc-500 block mb-3">
+                    Display Name
+                  </label>
+
+                  <div className="relative">
+                    <div className="absolute left-5 top-1/2 -translate-y-1/2 text-zinc-400">
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.8} stroke="currentColor" className="w-5 h-5">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6.75a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.5 20.118a7.5 7.5 0 0115 0A17.933 17.933 0 0112 21.75a17.933 17.933 0 01-7.5-1.632z" />
+                      </svg>
+                    </div>
+
+                    <input
+                      placeholder="John Doe"
+                      className="w-full h-[62px] rounded-2xl border border-zinc-200 bg-[#FAFAFA] pl-14 pr-5 outline-none focus:border-black focus:bg-white transition-all text-[15px]"
+                    />
+                  </div>
+                </div>
 
                 <div>
                   <label className="text-[13px] font-bold uppercase tracking-[0.15em] text-zinc-500 block mb-3">
                     Email
                   </label>
+
                   <div className="relative">
                     <div className="absolute left-5 top-1/2 -translate-y-1/2 text-zinc-400">
                       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.8} stroke="currentColor" className="w-5 h-5">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25H4.5a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5H4.5a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.909A2.25 2.25 0 012.25 6.993V6.75" />
                       </svg>
                     </div>
+
                     <input
                       placeholder="your@email.com"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
                       className="w-full h-[62px] rounded-2xl border border-zinc-200 bg-[#FAFAFA] pl-14 pr-5 outline-none focus:border-black focus:bg-white transition-all text-[15px]"
                     />
                   </div>
@@ -213,63 +187,60 @@ export default function LoginPage() {
                     <label className="text-[13px] font-bold uppercase tracking-[0.15em] text-zinc-500">
                       Password
                     </label>
-                    <Link href="/forgot-password" className="text-sm text-zinc-500 hover:text-black transition-all">
+
+                    <button className="text-sm text-zinc-500 hover:text-black transition-all">
                       Forgot?
-                    </Link>
+                    </button>
                   </div>
+
                   <div className="relative">
                     <div className="absolute left-5 top-1/2 -translate-y-1/2 text-zinc-400">
                       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.8} stroke="currentColor" className="w-5 h-5">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 0h10.5A2.25 2.25 0 0119.5 12.75v6A2.25 2.25 0 0117.25 21h-10.5A2.25 2.25 0 014.5 18.75v-6A2.25 2.25 0 016.75 10.5z" />
                       </svg>
                     </div>
+
                     <input
                       type="password"
-                      placeholder="Enter your password"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
+                      placeholder="At least 8 characters"
                       className="w-full h-[62px] rounded-2xl border border-zinc-200 bg-[#FAFAFA] pl-14 pr-5 outline-none focus:border-black focus:bg-white transition-all text-[15px]"
                     />
                   </div>
                 </div>
 
-                <button
-                  onClick={handleSubmit}
-                  disabled={loading}
-                  className="w-full h-[64px] rounded-2xl bg-black text-white font-bold text-[16px] shadow-2xl shadow-black/15 hover:scale-[0.99] active:scale-[0.98] transition-all disabled:opacity-50"
-                >
-                  {loading ? 'Signing in...' : 'Sign In →'}
+                <button className="w-full h-[64px] rounded-2xl bg-black text-white font-bold text-[16px] shadow-2xl shadow-black/15 hover:scale-[0.99] active:scale-[0.98] transition-all">
+                  Create Account →
                 </button>
+              </div>
 
-                {/* DIVIDER */}
-                <div className="flex items-center gap-4 my-8">
-                  <div className="flex-1 h-px bg-zinc-200" />
-                  <span className="text-xs uppercase tracking-[0.2em] text-zinc-400 font-medium">
-                    Or continue with
-                  </span>
-                  <div className="flex-1 h-px bg-zinc-200" />
-                </div>
+              {/* DIVIDER */}
+              <div className="flex items-center gap-4 my-8">
+                <div className="flex-1 h-px bg-zinc-200" />
 
-                {/* GOOGLE */}
-                <button
-                  onClick={handleGoogleSignIn}
-                  disabled={googleLoading}
-                  className="w-full h-[62px] rounded-2xl border border-zinc-200 bg-white hover:bg-zinc-50 transition-all flex items-center justify-center gap-4 font-semibold text-[15px] shadow-sm disabled:opacity-50"
-                >
-                  <img
-                    src="https://www.svgrepo.com/show/475656/google-color.svg"
-                    className="w-5 h-5"
-                  />
-                  Continue with Google
+                <span className="text-xs uppercase tracking-[0.2em] text-zinc-400 font-medium">
+                  Or continue with
+                </span>
+
+                <div className="flex-1 h-px bg-zinc-200" />
+              </div>
+
+              {/* GOOGLE */}
+              <button className="w-full h-[62px] rounded-2xl border border-zinc-200 bg-white hover:bg-zinc-50 transition-all flex items-center justify-center gap-4 font-semibold text-[15px] shadow-sm">
+                <img
+                  src="https://www.svgrepo.com/show/475656/google-color.svg"
+                  className="w-5 h-5"
+                />
+
+                Continue with Google
+              </button>
+
+              {/* FOOTER */}
+              <div className="mt-8 text-center text-[15px] text-zinc-500">
+                Already have an account?
+
+                <button className="ml-1 font-bold text-black hover:underline">
+                  Sign in
                 </button>
-
-                {/* FOOTER */}
-                <div className="mt-8 text-center text-[15px] text-zinc-500">
-                  Don&apos;t have an account?
-                  <Link href="/register" className="ml-1 font-bold text-black hover:underline">
-                    Sign up
-                  </Link>
-                </div>
               </div>
             </div>
           </div>

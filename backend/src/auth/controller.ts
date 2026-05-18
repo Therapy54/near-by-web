@@ -4,19 +4,6 @@ import { verifyIdToken, auth } from '../lib/firebaseAdmin';
 export let register = async (req: Request, res: Response): Promise<void> => {
   try {
     let { email, password, displayName } = req.body;
-    
-    if (
-      !email || !password || !displayName ||
-      displayName.trim().length < 2 ||
-      displayName.trim().length > 24 ||
-      password.length < 8
-    ) {
-      res.status(400).json({ 
-        success: false, 
-        error: { message: 'Email and password (min 8 characters) and displayName (between 2 and 24 characters) are required' } 
-      });
-      return;
-    }
 
     let userRecord = await auth.createUser({
       email,
@@ -73,25 +60,7 @@ export let register = async (req: Request, res: Response): Promise<void> => {
 
 export let login = async (req: Request, res: Response): Promise<void> => {
   try {
-    let { email, password } = req.body;
-    
-    if (!email || !password) {
-      res.status(400).json({ 
-        success: false, 
-        error: { message: 'Email and password are required' } 
-      });
-      return;
-    }
-
-    let { token } = req.body;
-    
-    if (!token) {
-      res.status(400).json({ 
-        success: false, 
-        error: { message: 'Please use Firebase client SDK to sign in and send ID token' } 
-      });
-      return;
-    }
+    let { email, password, token } = req.body;
 
     let decodedToken = await verifyIdToken(token);
     
@@ -173,6 +142,62 @@ export let verifyToken = async (req: Request, res: Response): Promise<void> => {
     res.status(401).json({ 
       success: false, 
       error: { message: 'Invalid token' } 
+    });
+  }
+};
+
+export let createSession = async (req: Request, res: Response): Promise<void> => {
+  try {
+    let { idToken } = req.body;
+
+    if (!idToken) {
+      res.status(400).json({
+        success: false,
+        error: { message: 'No ID token provided' }
+      });
+      return;
+    }
+
+    let expiresIn = 60 * 60 * 24 * 5 * 1000; // 5 days
+
+    let sessionCookie = await auth.createSessionCookie(idToken, { expiresIn });
+
+    res.setHeader('Set-Cookie', `session=${sessionCookie}; Max-Age=${5 * 24 * 60 * 60}; Path=/; HttpOnly; Secure; SameSite=Lax`);
+
+    res.status(200).json({ 
+      success: true, 
+      data: { message: 'Session created successfully' } 
+    });
+    return;
+  } catch (error: any) {
+    console.error('Session creation error:', error);
+    res.status(401).json({
+      success: false,
+      error: { message: 'Failed to create session: invalid ID token' }
+    });
+  }
+};
+
+export let clearSession = async (req: Request, res: Response): Promise<void> => {
+  try {
+    let sessionCookie = req.cookies?.session;
+
+    if (sessionCookie) {
+      await auth.revokeRefreshTokens(sessionCookie);
+    }
+
+    res.setHeader('Set-Cookie', 'session=; Max-Age=0; Path=/; HttpOnly; Secure; SameSite=Lax');
+
+    res.status(200).json({
+      success: true,
+      data: { message: 'Session cleared successfully' }
+    });
+    return;
+  } catch (error: any) {
+    console.error('Session clear error:', error);
+    res.status(400).json({
+      success: false,
+      error: { message: 'Failed to clear session' }
     });
   }
 };

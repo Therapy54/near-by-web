@@ -5,8 +5,8 @@ import { Inter } from 'next/font/google';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'Near-By',
-  description: 'Real-time global discovery and connection platform',
+  title: 'Near-By | Discover Nearby Opportunities',
+  description: 'Real-time global discovery and connection platform - Find products, services, jobs, and opportunities near you',
 };
 
 export default function RootLayout({

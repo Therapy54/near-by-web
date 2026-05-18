@@ -105,4 +105,42 @@ describe('Auth API Endpoints', () => {
     expect(response.status).toBe(401);
     expect(response.body.success).toBe(false);
     expect(response.body.error.message).toContain('No token provided');
+  });
+
+  test('Session endpoint should reject missing idToken', async () => {
+    let response = await request(app)
+      .post('/api/auth/session')
+      .send({});
+
+    expect(response.status).toBe(400);
+    expect(response.body.success).toBe(false);
+    expect(response.body.error.message).toContain('No ID token provided');
+  });
+
+  test('Session endpoint should reject empty idToken', async () => {
+    let response = await request(app)
+      .post('/api/auth/session')
+      .send({ idToken: '' });
+
+    expect(response.status).toBe(400);
+    expect(response.body.success).toBe(false);
+    expect(response.body.error.message).toBe('No ID token provided');
+  });
+
+  test('Logout endpoint should return success', async () => {
+    let response = await request(app).post('/api/auth/logout');
+    expect(response.status).toBe(200);
+    expect(response.body.success).toBe(true);
+    expect(response.body.data.message).toBe('Logged out successfully');
+  });
+
+  test('Verify token endpoint should reject missing auth header', async () => {
+    let response = await request(app)
+      .get('/api/auth/verify');
+
+    expect(response.status).toBe(401);
+    expect(response.body.success).toBe(false);
+    expect(response.body.error.message).toBe('No token provided');
+  });
 });
+
