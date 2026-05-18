@@ -5,10 +5,15 @@ export let register = async (req: Request, res: Response): Promise<void> => {
   try {
     let { email, password, displayName } = req.body;
     
-    if (!email || !password) {
+    if (
+      !email || !password || !displayName ||
+      displayName.trim().length < 2 ||
+      displayName.trim().length > 24 ||
+      password.length < 8
+    ) {
       res.status(400).json({ 
         success: false, 
-        error: { message: 'Email and password are required' } 
+        error: { message: 'Email and password (min 8 characters) and displayName (between 2 and 24 characters) are required' } 
       });
       return;
     }
@@ -16,7 +21,7 @@ export let register = async (req: Request, res: Response): Promise<void> => {
     let userRecord = await auth.createUser({
       email,
       password,
-      displayName: displayName || undefined,
+      displayName: displayName,
       emailVerified: false
     });
 

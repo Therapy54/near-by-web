@@ -179,6 +179,7 @@ The platform functions as:
 
 ## Features
 
+* display name required on signup
 * email signup/login
 * social authentication
 * session management
@@ -853,7 +854,7 @@ Implement complete authentication.
 
 ## Frontend
 
-* signup page
+* signup page (display name required)
 * login page
 * protected routes
 * session handling
@@ -864,7 +865,7 @@ Implement complete authentication.
 
 * token verification
 * auth middleware
-* user creation
+* user creation (display name required)
 * session validation
 
 ---

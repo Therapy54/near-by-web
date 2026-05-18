@@ -5,17 +5,17 @@ import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from 
 import { auth } from '@/lib/firebase';
 
 export default function LoginPage() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [googleLoading, setGoogleLoading] = useState(false);
+  let [email, setEmail] = useState('');
+  let [password, setPassword] = useState('');
+  let [loading, setLoading] = useState(false);
+  let [error, setError] = useState<string | null>(null);
+  let [googleLoading, setGoogleLoading] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  let handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
-    
+
     try {
       await signInWithEmailAndPassword(auth, email, password);
       window.location.href = '/';
@@ -26,13 +26,13 @@ export default function LoginPage() {
     }
   };
 
-  const handleGoogleSignIn = async () => {
+  let handleGoogleSignIn = async () => {
     setGoogleLoading(true);
     setError(null);
-    
+
     try {
-      const provider = new GoogleAuthProvider();
-      const userCredential = await signInWithPopup(auth, provider);
+      let provider = new GoogleAuthProvider();
+      let userCredential = await signInWithPopup(auth, provider);
       window.location.href = '/';
     } catch (err: any) {
       setError('Google sign in failed: ' + err.message);
@@ -43,9 +43,10 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen bg-white flex items-center justify-center px-4 py-8">
-      <div className="w-full max-w-md">
+      <div className="w-full max-w-md space-y-6">
         <h2 className="text-2xl font-bold text-center mb-6">Sign In</h2>
-        <form onSubmit={handleSubmit} className="space-y-6">
+
+        <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
             <input
@@ -57,7 +58,12 @@ export default function LoginPage() {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
+            <div className="flex items-center justify-between">
+              <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
+              <a href="/forgot-password" className="text-sm text-indigo-600 hover:text-indigo-500">
+                Forgot your password?
+              </a>
+            </div>
             <input
               type="password"
               required
@@ -66,37 +72,44 @@ export default function LoginPage() {
               onChange={(e) => setPassword(e.target.value)}
             />
           </div>
-          
+
           {error && (
             <p className="mt-2 text-sm text-red-600">{error}</p>
           )}
-          
-          <div className="flex items-center justify-between">
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full py-2 bg-indigo-600 text-white font-medium rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:opacity-50"
-            >
-              {loading ? 'Signing in...' : 'Sign in'}
-            </button>
-          </div>
-          
-          <div className="mt-4">
-            <button
-              onClick={handleGoogleSignIn}
-              disabled={googleLoading}
-              className="w-full py-2 bg-white text-gray-700 font-medium rounded-md border border-gray-300 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2"
-            >
-              {googleLoading ? 'Signing in with Google...' : 'Sign in with Google'}
-            </button>
-          </div>
-          
-          <div className="mt-4 text-center text-sm text-gray-500">
-            <a href="/register" className="font-medium text-indigo-600 hover:text-indigo-500">
-              Don't have an account? Sign up
-            </a>
-          </div>
+
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full py-2 bg-indigo-600 text-white font-medium rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:opacity-50"
+          >
+            {loading ? 'Signing in...' : 'Sign in'}
+          </button>
         </form>
+
+        <div className="mt-4">
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-gray-300" />
+            </div>
+            <div className="relative flex justify-center text-sm">
+              <span className="px-2 bg-white text-gray-500">or</span>
+            </div>
+          </div>
+
+          <button
+            onClick={handleGoogleSignIn}
+            disabled={googleLoading}
+            className="w-full py-2 bg-white text-gray-700 font-medium rounded-md border border-gray-300 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50"
+          >
+            {googleLoading ? 'Signing in with Google...' : 'Sign in with Google'}
+          </button>
+        </div>
+
+        <div className="mt-4 text-center text-sm text-gray-500">
+          <a href="/register" className="font-medium text-indigo-600 hover:text-indigo-500">
+            Don't have an account? Sign up
+          </a>
+        </div>
       </div>
     </div>
   );

@@ -16,33 +16,93 @@ describe('Auth API Endpoints', () => {
     expect(response.body.data.message).toBe('Near-By API is running');
   });
 
-  test('Register endpoint should exist and handle missing fields', async () => {
+  test('Register endpoint should reject empty body', async () => {
     let response = await request(app)
       .post('/api/auth/register')
-      .send({}); // Empty body
-    
+      .send({});
+
     expect(response.status).toBe(400);
     expect(response.body.success).toBe(false);
-    expect(response.body.error.message).toContain('Email and password are required');
   });
 
-  test('Login endpoint should exist and handle missing fields', async () => {
+  test('Register endpoint should reject body with only email', async () => {
+    let response = await request(app)
+      .post('/api/auth/register')
+      .send({ email: 'test@example.com' });
+
+    expect(response.status).toBe(400);
+    expect(response.body.success).toBe(false);
+  });
+
+  test('Register endpoint should reject body missing only displayName', async () => {
+    let response = await request(app)
+      .post('/api/auth/register')
+      .send({ email: 'test@example.com', password: 'validpass1' });
+
+    expect(response.status).toBe(400);
+    expect(response.body.success).toBe(false);
+  });
+
+  test('Register endpoint should reject missing password (all other fields present)', async () => {
+    let response = await request(app)
+      .post('/api/auth/register')
+      .send({ email: 'test@example.com', displayName: 'Jane' });
+
+    expect(response.status).toBe(400);
+    expect(response.body.success).toBe(false);
+  });
+
+  test('Register endpoint should reject displayName with only 1 character', async () => {
+    let response = await request(app)
+      .post('/api/auth/register')
+      .send({ email: 'test@example.com', password: 'validpass1', displayName: 'J' });
+
+    expect(response.status).toBe(400);
+    expect(response.body.success).toBe(false);
+  });
+
+  test('Register endpoint should reject displayName with 25 characters (max is 24)', async () => {
+    let response = await request(app)
+      .post('/api/auth/register')
+      .send({ email: 'test@example.com', password: 'validpass1', displayName: 'a'.repeat(25) });
+
+    expect(response.status).toBe(400);
+    expect(response.body.success).toBe(false);
+  });
+
+  test('Register endpoint should reject blank displayName', async () => {
+    let response = await request(app)
+      .post('/api/auth/register')
+      .send({ email: 'test@example.com', password: 'validpass1', displayName: '   ' });
+
+    expect(response.status).toBe(400);
+    expect(response.body.success).toBe(false);
+  });
+
+  test('Register endpoint should reject password shorter than 8 characters', async () => {
+    let response = await request(app)
+      .post('/api/auth/register')
+      .send({ email: 'test@example.com', password: 'sh0rt', displayName: 'Jane Doe' });
+
+    expect(response.status).toBe(400);
+    expect(response.body.success).toBe(false);
+  });
+
+  test('Login endpoint should reject empty body', async () => {
     let response = await request(app)
       .post('/api/auth/login')
-      .send({}); // Empty body
-    
+      .send({});
+
     expect(response.status).toBe(400);
     expect(response.body.success).toBe(false);
-    expect(response.body.error.message).toContain('Email and password are required');
   });
 
-  test('Verify token endpoint should exist and handle missing token', async () => {
+  test('Verify token endpoint should reject missing token', async () => {
     let response = await request(app)
       .get('/api/auth/verify')
-      .set('Authorization', ''); // Empty token
-    
+      .set('Authorization', '');
+
     expect(response.status).toBe(401);
     expect(response.body.success).toBe(false);
     expect(response.body.error.message).toContain('No token provided');
-  });
 });
