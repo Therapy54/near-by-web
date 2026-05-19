@@ -21,7 +21,7 @@ export default function ForgotPasswordPage() {
       switch (err.code) {
         case 'auth/user-not-found':
         case 'auth/invalid-email':
-          setSent(true);
+          alert('If an account with this email exists, a reset link has been sent.');
           break;
         default:
           alert('Failed to send reset email. Please try again.');

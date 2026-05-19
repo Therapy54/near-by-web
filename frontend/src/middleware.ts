@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
 function isPublicRoute(pathname: string): boolean {
+  if (pathname === '/') return true;
+
   let publicRoutes = [
     '/login',
     '/register',
@@ -9,7 +11,6 @@ function isPublicRoute(pathname: string): boolean {
     '/_next',
     '/api/auth',
     '/api/health',
-    '/api/',
   ];
 
   return publicRoutes.some((route) => pathname.startsWith(route));

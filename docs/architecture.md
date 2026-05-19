@@ -52,34 +52,32 @@ This architecture exists to ensure:
 |---|---|
 | Frontend | Next.js@latest (App Router), TypeScript |
 | Backend | Express.js, TypeScript |
-| Database | PostgreSQL via Prisma ORM |
+| Database | PostgreSQL (direct `pg` Pool | raw SQL) | |
 | Auth | Firebase Authentication |
 | Real-time | Firebase Firestore |
 | Media Storage | Firebase Cloud Storage |
 | Firebase Emulators | - Local Auth (Port 4100), Local Firestore (Port 4200), Local Storage (Port 4300), UI (Port 4000) |
 | API Layer | REST (frontend → backend) |
 
-# Core Philosophy
-
-The project architecture must be:
-
-* simple
-* intuitive
-* self-explanatory
-* domain-driven
-* visually understandable
-* context-oriented
-
-The structure itself should teach:
-
-* how the product works
-* how systems relate
-* where features belong
-* where developers should begin
-
-A developer or AI agent should understand the platform by simply looking at the folder structure.
-
 ---
+
+## ⚠️ PostgreSQL Case-Sensitivity & Naming Rules
+
+PostgreSQL folds **unquoted** identifiers to lowercase at parse time. This matters critically when mixing raw SQL strings with Prisma/duckDB-generated schemas.
+
+| Scenario | Behavior |
+|---|---|
+| `CREATE TABLE User` → column `firebaseUid` | Column stored as `firebaseuid` (unquoted → lowercased) |
+| `CREATE TABLE "User"` → column `"firebaseUid"` | Column stored as `firebaseUid` (quoted → case-preserved) |
+| `SELECT "firebaseUid" FROM "User"` | Works if column was created with quotes |
+| `SELECT "firebaseUid" FROM "User"` | **fails** if column was created without quotes (stored as `firebaseuid`) |
+
+**Practical Rule:**  
+Our table `"User"` exists with *lowercase* columns per `backend/sql/001_recreate_user_table.sql`.  
+All raw SQL queries in `backend/src/` must use **lowercase column names** (`firebaseuid`, `displayname`, `createdat`, `updatedat`) **without double-quoting** the individual column identifiers.
+
+The built-in `users` view (lowercase, `backend/sql/002_create_users_view.sql`) allows `SELECT * FROM users` (no quoting needed) as a safe alternative for manual inspection in pgAdmin or SQL clients.
+
 
 # Primary Architectural Principle
 
@@ -421,14 +419,20 @@ src/
 ├── moderation/
 │
 ├── shared/
-│   ├── db/
-│   ├── auth/
-│   ├── errors/
-│   ├── utils/
-│   ├── config/
-│   └── middleware/
+│   ├── db/          ← canonical DB pool + SQL query helpers
+│   ├── auth/        ← shared auth middleware
+│   ├── errors/      ← shared error types
+│   ├── utils/       ← shared utilities
+│   ├── config/      ← shared config
+│   └── middleware/  ← shared HTTP middleware
+
+├── lib/             ← infra wiring (firebaseAdmin, legacy db shim)
+│   ├── firebaseAdmin.ts
+│   └── db.ts        ← re-export of shared/db/pool (to be removed after migration)
 │
 └── server.ts
+
+sql/                  ← raw SQL migration files (Prisma-free)
 ```
 
 ---

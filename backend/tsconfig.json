@@ -4,7 +4,6 @@
 
     /* Projects */
     "incremental": true,
-    "rootDir": "src",
     "outDir": "./dist/",
     "removeComments": false,
     "noEmitOnError": true,
@@ -45,6 +44,6 @@
     /* Advanced */
     "skipDefaultLibCheck": true
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "test/**/*"],
   "exclude": ["node_modules", "dist", "temp"]
 }
