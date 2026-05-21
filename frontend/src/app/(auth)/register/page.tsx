@@ -66,7 +66,8 @@ export default function RegisterPage() {
       await updateProfile(credentials.user, { displayName: enteredDisplayName.trim() });
       let idToken = await credentials.user.getIdToken();
       await createSessionCookie(idToken);
-      window.location.href = '/';
+      let redirectTo = new URLSearchParams(window.location.search).get('redirect') || '/dashboard';
+      window.location.href = redirectTo;
     } catch (err: any) {
       setError('Registration failed: ' + err.message);
     } finally {
@@ -89,7 +90,8 @@ export default function RegisterPage() {
       await updateProfile(credentials.user, { displayName: enteredDisplayName.trim() });
       let idToken = await credentials.user.getIdToken();
       await createSessionCookie(idToken);
-      window.location.href = '/';
+      let redirectTo = new URLSearchParams(window.location.search).get('redirect') || '/dashboard';
+      window.location.href = redirectTo;
     } catch (err: any) {
       setError('Google sign up failed: ' + err.message);
     } finally {

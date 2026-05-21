@@ -11,9 +11,10 @@ This protocol defines the mandatory workflow for any AI agent interacting with t
 ## 2. Mandatory File Order Before Any Work
 
 1. `docs/skills/architecture.md` — Understand the system structure.
-2. `docs/skills/coding_standards.md` — Know the formatting rules.
-3. `docs/skills/verification_process.md` — Know what "done" means.
-4. This file — Confirm your protocol.
+2. `docs/skills/api_contracts.md` — Know the api contracts.
+3. `docs/skills/coding_standards.md` — Know the formatting rules.
+4. `docs/skills/verification_process.md` — Know what "done" means.
+5. This file — Confirm your protocol.
 
 ## 3. Non-Negotiable Rules
 
@@ -32,7 +33,7 @@ This protocol defines the mandatory workflow for any AI agent interacting with t
 - ❌ Do NOT introduce `const` for variables you control.
 - ❌ Do NOT inline `}` on the same line as `if`/`else`/`try`/`catch`.
 - ❌ Do NOT add direct Prisma/PostgreSQL queries in frontend code.
-- ❌ Do NOT skip the build verification step.
+- ❌ Do NOT skip the testing->debugging->building->verifying->documenting process.
 - ❌ Do NOT leave a session with broken TypeScript errors or code or project errors.
 
 ## 5. When in Doubt

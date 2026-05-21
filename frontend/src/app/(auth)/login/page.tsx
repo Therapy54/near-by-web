@@ -25,6 +25,11 @@ export default function LoginPage() {
   let [error, setError] = useState<string | null>(null);
   let [googleLoading, setGoogleLoading] = useState(false);
 
+  let getRedirectUrl = () => {
+    let params = new URLSearchParams(window.location.search);
+    return params.get('redirect') || '/dashboard';
+  };
+
   let handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -34,7 +39,8 @@ export default function LoginPage() {
       let credentials: UserCredential = await signInWithEmailAndPassword(auth, email, password);
       let idToken = await credentials.user.getIdToken();
       await createSessionCookie(idToken);
-      window.location.href = '/';
+      let redirectTo = getRedirectUrl();
+      window.location.href = redirectTo;
     } catch (err: any) {
       setError('Login failed: ' + err.message);
     } finally {
@@ -51,7 +57,8 @@ export default function LoginPage() {
       let credentials: UserCredential = await signInWithPopup(auth, provider);
       let idToken = await credentials.user.getIdToken();
       await createSessionCookie(idToken);
-      window.location.href = '/';
+      let redirectTo = getRedirectUrl();
+      window.location.href = redirectTo;
     } catch (err: any) {
       setError('Google sign in failed: ' + err.message);
     } finally {

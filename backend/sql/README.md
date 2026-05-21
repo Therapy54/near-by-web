@@ -15,3 +15,4 @@ node -e "require('dotenv').config(); const fs = require('fs'); const { Pool } = 
 |---|---|
 | `001_recreate_user_table.sql` | Drops and recreates the User table |
 | `002_create_users_view.sql` | Creates `users` view (lowercase, queryable without quotes) |
+| `003_create_profiles_table.sql` | Creates `Profile` table with bio, location, avatar, skills, socialLinks, availability |

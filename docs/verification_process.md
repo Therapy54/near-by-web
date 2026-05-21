@@ -24,7 +24,7 @@ Before modifying any existing file, the agent must:
 ## 3. Post-Change Verification
 
 After any code addition or modification:
-1. Write tests/verification scripts e.g unit tests, integration tests, api tests etc to verify the changes and that they meet the requirements.
+1. Write tests and verification scripts e.g unit tests, integration tests, api tests etc to verify the changes and that they meet the requirements.
 2. Run the relevant build command(s) immediately.
 3. If errors occur, fix them before reporting the task as complete.
 4. Do NOT leave errors for the next session to fix.

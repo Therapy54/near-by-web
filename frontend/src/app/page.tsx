@@ -178,6 +178,7 @@ export default function Home() {
                     I already have an account
                   </Link>
                 </div>
+
               </div>
             </div>
           </div>

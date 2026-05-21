@@ -2,9 +2,12 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
 function isPublicRoute(pathname: string): boolean {
-  if (pathname === '/') return true;
+  if (pathname === '/') {
+    return true;
+  }
 
   let publicRoutes = [
+    '/',
     '/login',
     '/register',
     '/forgot-password',
@@ -36,6 +39,7 @@ export function middleware(request: NextRequest) {
   return NextResponse.next();
 }
 
-export const config = {
+export let config = {
   matcher: ['/((?!_next/static|_next/image|favicon.ico).*)'],
 };
+

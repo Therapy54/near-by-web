@@ -4,9 +4,10 @@ import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import authRoutes from './auth/routes';
-// Example of how to use auth middleware for protected routes
-// import { authenticateUser } from './shared/middleware/authMiddleware';
-// import listingRoutes from './listings/routes';
+import { authenticateUser } from './shared/middleware/authMiddleware';
+import profileRoutes from './profiles/routes';
+import portfolioRoutes from './portfolio/routes';
+import listingsRoutes from './listings/routes';
 
 let app = express();
 let PORT = process.env.PORT || 4500;
@@ -19,30 +20,28 @@ app.use(cors({
 app.use(express.json());
 
 app.get('/health', (req, res) => {
-  res.status(200).json({ 
-    success: true, 
-    data: { 
-      status: 'OK', 
-      timestamp: new Date().toISOString() 
-    } 
+  res.status(200).json({
+    success: true,
+    data: {
+      status: 'OK',
+      timestamp: new Date().toISOString()
+    }
   });
 });
 
 app.get('/api', (req, res) => {
-  res.status(200).json({ 
-    success: true, 
-    data: { 
-      message: 'Near-By API is running' 
-    } 
+  res.status(200).json({
+    success: true,
+    data: {
+      message: 'Near-By API is running'
+    }
   });
 });
 
 app.use('/api/auth', authRoutes);
-
-// Example of protected domain routes (uncomment when implementing domains)
-// app.use('/api/listings', authenticateUser, listingRoutes);
-// app.use('/api/feed', authenticateUser, feedRoutes);
-// app.use('/api/profile', authenticateUser, profileRoutes);
+app.use('/api/profile', profileRoutes);
+app.use('/api/portfolio', portfolioRoutes);
+app.use('/api/listings', listingsRoutes);
 
 if (require.main === module) {
   app.listen(PORT, () => {
